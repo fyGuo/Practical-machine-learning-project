@@ -59,6 +59,8 @@ dim(train1_train)
 ```{r }
 set.seed(1)
 mod<-train(classe~.,data=train1_train,method="rpart")
+```
+```{r}
 fancyRpartPlot(mod$finalModel)
 ```
 
