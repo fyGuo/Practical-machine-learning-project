@@ -10,7 +10,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-# OVerview
+# Overview
 In this project, we first download the data and split the train dataset to two separate datasets:training and testing. Because the dimensions of the data is so huge, and there is a lot of missing values. We need to drop these missin values and reduce the dimension of predictors. Then we fit a classification model and test it on the test dateset. Finally we apply the model to the new data and make predictions. 
 
 ```{r}
@@ -61,6 +61,7 @@ set.seed(1)
 mod<-train(classe~.,data=train1_train,method="rpart")
 fancyRpartPlot(mod$finalModel)
 ```
+
 # Crossvalidate the model
 ```{r}
 pred<-predict(mod,train1_test)
