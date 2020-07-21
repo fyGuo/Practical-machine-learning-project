@@ -2,7 +2,9 @@
 title: "Practical machine learning project"
 author: "Fuyu"
 date: "July 21, 2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
