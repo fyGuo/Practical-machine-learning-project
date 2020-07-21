@@ -1,0 +1,73 @@
+---
+title: "Practical machine learning project"
+author: "Fuyu"
+date: "July 21, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# OVerview
+In this project, we first download the data and split the train dataset to two separate datasets:training and testing. Because the dimensions of the data is so huge, and there is a lot of missing values. We need to drop these missin values and reduce the dimension of predictors. Then we fit a classification model and test it on the test dateset. Finally we apply the model to the new data and make predictions. 
+
+```{r}
+path<-getwd()
+url <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"
+download.file(url, file.path(path, "train.csv"))
+url <- "https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"
+download.file(url, file.path(path, "test.csv"))
+train<-read.csv("train.csv")
+test<-read.csv("test.csv")
+library(caret)
+library(AppliedPredictiveModeling)
+library(dplyr)
+library(rpart.plot)
+library(rpart)
+library(rattle)
+names(train)[names(train)=="X"]="class"
+names(test)[names(test)=="X"]="class"
+train$class<-as.factor(train$class)
+test$class<-as.factor(test$class)
+```
+#Exclude missing value
+```{r}
+drop_NA<-function(df){
+        index<-NULL
+        for( i in 1:dim(df)[2] ){
+                if(is.na(df[1,i])==T){index<-c(index,i)}
+        }
+        df<-df[,-c(1,2,index)]
+        }
+train1<-drop_NA(train)
+test1<-drop_NA(test)
+```
+
+# Reduce the dimension of predictors
+```{r}
+intrain<-createDataPartition(y=train1$classe,p=0.7,list=F)
+train1_train<-train1[intrain,]
+train1_test<-train1[-intrain,]
+NZV <- nearZeroVar(train1_train)
+train1_train <- train1_train[, -NZV]
+train1_test <- train1_test[, -NZV]
+dim(train1_train)
+```
+#Build a classification trees
+```{r }
+set.seed(1)
+mod<-train(classe~.,data=train1_train,method="rpart")
+fancyRpartPlot(mod$finalModel)
+```
+# Crossvalidate the model
+```{r}
+pred<-predict(mod,train1_test)
+tb<-table(pred,train1_test$classe)
+confusionMatrix(tb)
+```
+Therefore, here the **accuary** is **0.6503** and the **out of sample error** is **0.35**
+
+# Applying the model to the test data
+```{r}
+predict(mod,test1)
+```
