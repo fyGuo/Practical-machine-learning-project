@@ -16,40 +16,40 @@ apply the model to the new data and make predictions.
     train<-read.csv("train.csv")
     test<-read.csv("test.csv")
     library(caret)
-
+    
     ## Loading required package: lattice
-
+    
     ## Loading required package: ggplot2
-
+    
     library(AppliedPredictiveModeling)
     library(dplyr)
-
+    
     ## 
     ## Attaching package: 'dplyr'
-
+    
     ## The following objects are masked from 'package:stats':
     ## 
     ##     filter, lag
-
+    
     ## The following objects are masked from 'package:base':
     ## 
     ##     intersect, setdiff, setequal, union
-
+    
     library(rpart.plot)
-
+    
     ## Loading required package: rpart
-
+    
     library(rpart)
     library(rattle)
-
+    
     ## Loading required package: tibble
-
+    
     ## Loading required package: bitops
-
+    
     ## Rattle: A free graphical interface for data science with R.
     ## XXXX 5.4.0 Copyright (c) 2006-2020 Togaware Pty Ltd.
     ## Type 'rattle()' to shake, rattle, and roll your data.
-
+    
     names(train)[names(train)=="X"]="class"
     names(test)[names(test)=="X"]="class"
     train$class<-as.factor(train$class)
@@ -78,7 +78,7 @@ Reduce the dimension of predictors
     train1_train <- train1_train[, -NZV]
     train1_test <- train1_test[, -NZV]
     dim(train1_train)
-
+    
     ## [1] 13737    57
 
 Build a classification trees
@@ -86,10 +86,10 @@ Build a classification trees
 
     set.seed(1)
     mod<-train(classe~.,data=train1_train,method="rpart")
-
+    
     fancyRpartPlot(mod$finalModel)
 
-![](Project_files/figure-markdown_strict/unnamed-chunk-5-1.png)
+![](https://github.com/fyGuo/Practical-machine-learning-project/blob/master/Rplot.png)
 
 Crossvalidate the model
 =======================
@@ -97,7 +97,7 @@ Crossvalidate the model
     pred<-predict(mod,train1_test)
     tb<-table(pred,train1_test$classe)
     confusionMatrix(tb)
-
+    
     ## Confusion Matrix and Statistics
     ## 
     ##     
@@ -138,6 +138,6 @@ Applying the model to the test data
 ===================================
 
     predict(mod,test1)
-
+    
     ##  [1] C C C A A D C D A A D C B A C C C D C B
     ## Levels: A B C D E
